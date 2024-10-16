@@ -61,5 +61,25 @@ namespace API_Labo.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+
+        [Authorize("UserRequired")]
+        [HttpGet("ParUtilisateur")]
+        public IActionResult ParUtilisateur() {
+
+            string tokenFromRequest = HttpContext.Request.Headers["Authorization"];
+            string token = tokenFromRequest.Substring(7, tokenFromRequest.Length - 7);
+            JwtSecurityToken jwt = new JwtSecurityToken(token);
+            int utilisateurId = int.Parse(jwt.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+
+            try {
+                return Ok(_venteService.ParUtilisateur(utilisateurId));
+            } catch (ArgumentOutOfRangeException ex) {
+                return NotFound(ex.Message);
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

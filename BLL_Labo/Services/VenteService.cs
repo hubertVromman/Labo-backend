@@ -84,5 +84,18 @@ namespace BLL_Labo.Services {
             _dbContext.SaveChanges();
             return v.VenteId;
         }
+
+        public IEnumerable<Vente> ParUtilisateur(int id) {
+            IEnumerable<Vente> ventes = _dbContext.ventes.Where(p => p.AcheteurId == id).Include(v => v.Acheteur).Include(v => v.VenteLivre).ThenInclude(vl => vl.Livre).Include(v => v.Bibliotheque);
+            foreach (Vente v in ventes) {
+                v.Acheteur.Achats = null;
+                foreach (VenteLivre venteLivre in v.VenteLivre) {
+                    venteLivre.Vente = null;
+                    venteLivre.Livre.VenteLivre = null;
+                }
+                v.Bibliotheque.Ventes = null;
+            }
+            return ventes;
+        }
     }
 }
