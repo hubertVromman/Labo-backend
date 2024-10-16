@@ -18,9 +18,6 @@ public class DatabaseContext : DbContext {
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
 
-        modelBuilder.Entity<Livre>()
-            .HasIndex(l => l.ISBN)
-            .IsUnique();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {

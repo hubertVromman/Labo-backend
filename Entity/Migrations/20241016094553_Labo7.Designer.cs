@@ -11,26 +11,26 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFramework.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241008083113_Labo3")]
-    partial class Labo3
+    [Migration("20241016094553_Labo7")]
+    partial class Labo7
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("EntityFramework.Entities.Auteur", b =>
                 {
-                    b.Property<int>("AuteurId")
+                    b.Property<int?>("AuteurId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuteurId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("AuteurId"));
 
                     b.Property<string>("Nom")
                         .IsRequired()
@@ -45,6 +45,14 @@ namespace EntityFramework.Migrations
                     b.HasKey("AuteurId");
 
                     b.ToTable("auteurs");
+
+                    b.HasData(
+                        new
+                        {
+                            AuteurId = -1,
+                            Nom = "Durant",
+                            Prenom = "Pierre"
+                        });
                 });
 
             modelBuilder.Entity("EntityFramework.Entities.Bibliotheque", b =>
@@ -84,53 +92,6 @@ namespace EntityFramework.Migrations
                         });
                 });
 
-            modelBuilder.Entity("EntityFramework.Entities.Emprunt", b =>
-                {
-                    b.Property<int>("EmpruntId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmpruntId"));
-
-                    b.Property<int>("BibliothequeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly>("DateDebut")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly>("DateFin")
-                        .HasColumnType("date");
-
-                    b.Property<int>("EmprunteurId")
-                        .HasColumnType("int");
-
-                    b.HasKey("EmpruntId");
-
-                    b.HasIndex("BibliothequeId");
-
-                    b.HasIndex("EmprunteurId");
-
-                    b.ToTable("emprunts");
-                });
-
-            modelBuilder.Entity("EntityFramework.Entities.EmpruntLivre", b =>
-                {
-                    b.Property<int>("EmpruntId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LivreId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantite")
-                        .HasColumnType("int");
-
-                    b.HasKey("EmpruntId", "LivreId");
-
-                    b.HasIndex("LivreId");
-
-                    b.ToTable("emprunLivres");
-                });
-
             modelBuilder.Entity("EntityFramework.Entities.Livre", b =>
                 {
                     b.Property<int>("LivreId")
@@ -163,6 +124,35 @@ namespace EntityFramework.Migrations
                         .IsUnique();
 
                     b.ToTable("livres");
+
+                    b.HasData(
+                        new
+                        {
+                            LivreId = -1,
+                            DateParution = new DateOnly(2015, 10, 25),
+                            Genre = "Thriller",
+                            ISBN = 1234,
+                            PrixVente = 19.99m,
+                            Titre = "Coup de feu"
+                        },
+                        new
+                        {
+                            LivreId = -2,
+                            DateParution = new DateOnly(2015, 10, 25),
+                            Genre = "Romantique",
+                            ISBN = 1235,
+                            PrixVente = 19.99m,
+                            Titre = "Coup de foudre"
+                        },
+                        new
+                        {
+                            LivreId = -3,
+                            DateParution = new DateOnly(2015, 10, 25),
+                            Genre = "Porno",
+                            ISBN = 1236,
+                            PrixVente = 19.99m,
+                            Titre = "Coup de fouet"
+                        });
                 });
 
             modelBuilder.Entity("EntityFramework.Entities.LivreAuteur", b =>
@@ -178,6 +168,70 @@ namespace EntityFramework.Migrations
                     b.HasIndex("AuteurId");
 
                     b.ToTable("livreAuteurs");
+
+                    b.HasData(
+                        new
+                        {
+                            LivreId = -1,
+                            AuteurId = -1
+                        },
+                        new
+                        {
+                            LivreId = -2,
+                            AuteurId = -1
+                        },
+                        new
+                        {
+                            LivreId = -3,
+                            AuteurId = -1
+                        });
+                });
+
+            modelBuilder.Entity("EntityFramework.Entities.Pret", b =>
+                {
+                    b.Property<int>("PretId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PretId"));
+
+                    b.Property<int>("BibliothequeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("DateDebut")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("DateFin")
+                        .HasColumnType("date");
+
+                    b.Property<int>("EmprunteurId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PretId");
+
+                    b.HasIndex("BibliothequeId");
+
+                    b.HasIndex("EmprunteurId");
+
+                    b.ToTable("prets");
+                });
+
+            modelBuilder.Entity("EntityFramework.Entities.PretLivre", b =>
+                {
+                    b.Property<int>("PretId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LivreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantite")
+                        .HasColumnType("int");
+
+                    b.HasKey("PretId", "LivreId");
+
+                    b.HasIndex("LivreId");
+
+                    b.ToTable("pretsLivres");
                 });
 
             modelBuilder.Entity("EntityFramework.Entities.StockLivre", b =>
@@ -199,6 +253,29 @@ namespace EntityFramework.Migrations
                     b.HasIndex("BibliothequeId");
 
                     b.ToTable("stockLivres");
+
+                    b.HasData(
+                        new
+                        {
+                            LivreId = -1,
+                            BibliothequeId = -1,
+                            StockAchat = 10,
+                            StockLocation = 10
+                        },
+                        new
+                        {
+                            LivreId = -2,
+                            BibliothequeId = -1,
+                            StockAchat = 10,
+                            StockLocation = 10
+                        },
+                        new
+                        {
+                            LivreId = -3,
+                            BibliothequeId = -1,
+                            StockAchat = 10,
+                            StockLocation = 10
+                        });
                 });
 
             modelBuilder.Entity("EntityFramework.Entities.Utilisateur", b =>
@@ -216,19 +293,40 @@ namespace EntityFramework.Migrations
 
                     b.Property<string>("MotDePasse")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
 
                     b.Property<string>("Nom")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
 
                     b.Property<string>("Prenom")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UtilisateurId");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("utilisateurs");
+
+                    b.HasData(
+                        new
+                        {
+                            UtilisateurId = -1,
+                            Email = "hello@gmail.com",
+                            MotDePasse = "$2a$11$8AaJxUgo7ifbZZHsrVEn5O/jRhcYvAvZqfSkHf29IDDAqw//7p346",
+                            Nom = "Noel",
+                            Prenom = "Benjamin",
+                            Role = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("EntityFramework.Entities.Vente", b =>
@@ -278,48 +376,6 @@ namespace EntityFramework.Migrations
                     b.ToTable("venteLivres");
                 });
 
-            modelBuilder.Entity("EntityFramework.Entities.Emprunt", b =>
-                {
-                    b.HasOne("EntityFramework.Entities.Bibliotheque", "Bibliotheque")
-                        .WithMany("Emprunts")
-                        .HasForeignKey("BibliothequeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Emprunt_Bibliotheque");
-
-                    b.HasOne("EntityFramework.Entities.Utilisateur", "Emprunteur")
-                        .WithMany("Emprunts")
-                        .HasForeignKey("EmprunteurId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Emprunt_Utilisateur");
-
-                    b.Navigation("Bibliotheque");
-
-                    b.Navigation("Emprunteur");
-                });
-
-            modelBuilder.Entity("EntityFramework.Entities.EmpruntLivre", b =>
-                {
-                    b.HasOne("EntityFramework.Entities.Emprunt", "Emprunt")
-                        .WithMany("EmpruntLivre")
-                        .HasForeignKey("EmpruntId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_EmpruntLivre_Emprunt");
-
-                    b.HasOne("EntityFramework.Entities.Livre", "Livre")
-                        .WithMany("EmpruntLivre")
-                        .HasForeignKey("LivreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_EmpruntLivre_Livre");
-
-                    b.Navigation("Emprunt");
-
-                    b.Navigation("Livre");
-                });
-
             modelBuilder.Entity("EntityFramework.Entities.LivreAuteur", b =>
                 {
                     b.HasOne("EntityFramework.Entities.Auteur", "Auteur")
@@ -339,6 +395,48 @@ namespace EntityFramework.Migrations
                     b.Navigation("Auteur");
 
                     b.Navigation("Livre");
+                });
+
+            modelBuilder.Entity("EntityFramework.Entities.Pret", b =>
+                {
+                    b.HasOne("EntityFramework.Entities.Bibliotheque", "Bibliotheque")
+                        .WithMany("Prets")
+                        .HasForeignKey("BibliothequeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Pret_Bibliotheque");
+
+                    b.HasOne("EntityFramework.Entities.Utilisateur", "Emprunteur")
+                        .WithMany("Emprunts")
+                        .HasForeignKey("EmprunteurId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Pret_Utilisateur");
+
+                    b.Navigation("Bibliotheque");
+
+                    b.Navigation("Emprunteur");
+                });
+
+            modelBuilder.Entity("EntityFramework.Entities.PretLivre", b =>
+                {
+                    b.HasOne("EntityFramework.Entities.Livre", "Livre")
+                        .WithMany("PretLivre")
+                        .HasForeignKey("LivreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_PretLivre_Livre");
+
+                    b.HasOne("EntityFramework.Entities.Pret", "Pret")
+                        .WithMany("PretLivre")
+                        .HasForeignKey("PretId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_PretLivre_Pret");
+
+                    b.Navigation("Livre");
+
+                    b.Navigation("Pret");
                 });
 
             modelBuilder.Entity("EntityFramework.Entities.StockLivre", b =>
@@ -411,27 +509,27 @@ namespace EntityFramework.Migrations
 
             modelBuilder.Entity("EntityFramework.Entities.Bibliotheque", b =>
                 {
-                    b.Navigation("Emprunts");
+                    b.Navigation("Prets");
 
                     b.Navigation("StockLivre");
 
                     b.Navigation("Ventes");
                 });
 
-            modelBuilder.Entity("EntityFramework.Entities.Emprunt", b =>
-                {
-                    b.Navigation("EmpruntLivre");
-                });
-
             modelBuilder.Entity("EntityFramework.Entities.Livre", b =>
                 {
-                    b.Navigation("EmpruntLivre");
-
                     b.Navigation("LivreAuteur");
+
+                    b.Navigation("PretLivre");
 
                     b.Navigation("StockLivre");
 
                     b.Navigation("VenteLivre");
+                });
+
+            modelBuilder.Entity("EntityFramework.Entities.Pret", b =>
+                {
+                    b.Navigation("PretLivre");
                 });
 
             modelBuilder.Entity("EntityFramework.Entities.Utilisateur", b =>

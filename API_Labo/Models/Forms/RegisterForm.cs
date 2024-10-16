@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace API_Labo.Models.DTO {
+namespace API_Labo.Models.Forms {
     public class RegisterForm {
 
         [Required]

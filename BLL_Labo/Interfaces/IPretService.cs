@@ -6,5 +6,7 @@ namespace BLL_Labo.Interfaces {
         int Create(Commande commande);
         Pret Get(int id);
         IEnumerable<Pret> Get();
+        int Rendre(int id, int utilisateurId);
+        IEnumerable<Pret> ParUtilisateur(int id);
     }
 }

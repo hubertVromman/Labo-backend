@@ -28,6 +28,8 @@ namespace EntityFramework.Configs {
                .IsRequired()
                .HasMaxLength(320);
 
+            builder.HasIndex(u => u.Email).IsUnique();
+
             builder.HasData(
                 new Utilisateur() {
                     UtilisateurId = -1,
@@ -35,6 +37,7 @@ namespace EntityFramework.Configs {
                     MotDePasse = "$2a$11$8AaJxUgo7ifbZZHsrVEn5O/jRhcYvAvZqfSkHf29IDDAqw//7p346",
                     Nom = "Noel",
                     Prenom = "Benjamin",
+                    Role = "Admin"
                 }
             );
         }

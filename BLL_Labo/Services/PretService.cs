@@ -12,13 +12,7 @@ using System.Threading.Tasks;
 
 namespace BLL_Labo.Services
 {
-    public class PretService : IPretService {
-
-        private DatabaseContext _dbContext;
-
-        public PretService(DatabaseContext db) {
-            _dbContext = db;
-        }
+    public class PretService(DatabaseContext _dbContext, IBibliothequeService _bibliothequeService) : IPretService {
 
         public IEnumerable<Pret> Get() {
             IEnumerable<Pret> prets = _dbContext.prets.Include(v => v.PretLivre).ThenInclude(vl => vl.Livre).Include(v => v.Emprunteur).Include(v => v.Bibliotheque);
@@ -83,6 +77,36 @@ namespace BLL_Labo.Services
             }
             _dbContext.SaveChanges();
             return p.PretId;
+        }
+
+        public int Rendre(int id, int utilisateurId) {
+            Pret p = _dbContext.prets.Where(p => p.PretId == id).Include(p => p.PretLivre).FirstOrDefault() ?? throw new ArgumentOutOfRangeException("Le pret n'a pas été trouvé");
+            if (p.EmprunteurId != utilisateurId) {
+                throw new UnauthorizedAccessException("L'utilisateur n'a pas fait le pret");
+            }
+            foreach (PretLivre pl in p.PretLivre)
+            {
+                _bibliothequeService.AjouterStock(new StockForm() {
+                    BibliothequeId = p.BibliothequeId,
+                    LivreId = pl.LivreId,
+                    StockLocation = pl.Quantite,
+                }, false);
+            }
+            p.EstRendu = true;
+            return _dbContext.SaveChanges();
+        }
+
+        public IEnumerable<Pret> ParUtilisateur(int id) {
+            IEnumerable<Pret> prets = _dbContext.prets.Where(p => p.EmprunteurId == id).Include(v => v.Emprunteur).Include(v => v.PretLivre).ThenInclude(vl => vl.Livre).Include(v => v.Bibliotheque);
+            foreach (Pret p in prets) {
+                p.Emprunteur.Emprunts = null;
+                foreach (PretLivre pretLivre in p.PretLivre) {
+                    pretLivre.Pret = null;
+                    pretLivre.Livre.PretLivre = null;
+                }
+                p.Bibliotheque.Prets = null;
+            }
+            return prets;
         }
     }
 }

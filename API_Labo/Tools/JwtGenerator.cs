@@ -7,7 +7,7 @@ using System.Text;
 namespace API_Labo.Tools {
     public class JwtGenerator {
         public static readonly string secretKey =
-            "lEs fR@mB0isI3rs S0nT Perchés SuR le T@b0ur3t D3 mOn Grand-Père";
+            "La Saint-Nicolas c'est le 6 décembre et Noël c'est le 25 décembre";
 
         public string GenerateToken(Utilisateur u) {
             //Génération de la signin key
@@ -17,6 +17,7 @@ namespace API_Labo.Tools {
             //Génération du payload (Body)
             Claim[] myclaims =
             {
+                new Claim(ClaimTypes.NameIdentifier, u.UtilisateurId.ToString()),
                 new Claim(ClaimTypes.Email, u.Email),
                 new Claim(ClaimTypes.Role, u.Role),
                 new Claim(ClaimTypes.Name, u.Nom),

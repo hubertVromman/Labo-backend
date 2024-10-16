@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Common_Labo.Entities;
 
 namespace EntityFramework.Entities {
-    public class Bibliotheque : IBibliotheque
+    public class Bibliotheque
     {
         public int BibliothequeId { get; set; }
         public string Nom { get; set; }

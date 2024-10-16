@@ -12,6 +12,7 @@ namespace EntityFramework.Entities {
         public DateOnly DateFin { get; set; }
         public List<PretLivre> PretLivre { get; set; }
         public int EmprunteurId { get; set; }
+        public bool EstRendu { get; set; } = false;
         public Utilisateur Emprunteur { get; set; }
         public int BibliothequeId { get; set; }
         public Bibliotheque Bibliotheque { get; set; }

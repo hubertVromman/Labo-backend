@@ -24,6 +24,7 @@ namespace BLL_Labo.Services
                 Prenom = prenom
             };
             _dbContext.Add(u);
+            _dbContext.SaveChanges();
             return u.UtilisateurId != 0;
         }
 
@@ -33,6 +34,15 @@ namespace BLL_Labo.Services
 
         public Utilisateur? GetUserByEmail(string email) {
             return _dbContext.utilisateurs.Where(u => u.Email == email).FirstOrDefault();
+        }
+        public int ChangeRole(int id, string nouveauRole) {
+            Utilisateur u = _dbContext.utilisateurs.Where(u => u.UtilisateurId == id).FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
+            string[] roles = ["Utilisateur", "Employee", "Admin"];
+            if (!roles.Contains(nouveauRole)) {
+                throw new ArgumentException("Role not found");
+            }
+            u.Role = nouveauRole;
+            return _dbContext.SaveChanges();
         }
     }
 }

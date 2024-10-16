@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,6 +27,8 @@ namespace EntityFramework.Configs {
             builder.Property(nameof(Livre.PrixVente))
                 .HasColumnType("DECIMAL(9, 2)")
                 .IsRequired();
+
+            builder.HasIndex(l => l.ISBN).IsUnique();
 
             builder.HasData(
                 new Livre() {

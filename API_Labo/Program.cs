@@ -4,10 +4,10 @@ using BLL_Labo.Interfaces;
 using BLL_Labo.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
-namespace API_Labo
-{
+namespace API_Labo {
     public class Program {
         public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
@@ -17,14 +17,40 @@ namespace API_Labo
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(setup => {
+                // Include 'SecurityScheme' to use JWT Authentication
+                var jwtSecurityScheme = new OpenApiSecurityScheme {
+                    BearerFormat = "JWT",
+                    Name = "JWT Authentication",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
 
-            builder.Services.AddScoped<DatabaseContext, DatabaseContext>();
-            builder.Services.AddScoped<IVenteService, VenteService>();
-            builder.Services.AddScoped<IPretService, PretService>();
-            builder.Services.AddScoped<IUtilisateurService, UtilisateurService>();
+                    Reference = new OpenApiReference {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+                setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { jwtSecurityScheme, Array.Empty<string>() }
+                });
+
+            });
+
+            builder.Services.AddScoped<DatabaseContext>();
             builder.Services.AddScoped<JwtGenerator>();
 
+            builder.Services.AddScoped<IVenteService, VenteService>();
+            builder.Services.AddScoped<IPretService, PretService>();
+            builder.Services.AddScoped<IAuteurService, AuteurService>();
+            builder.Services.AddScoped<IUtilisateurService, UtilisateurService>();
+            builder.Services.AddScoped<IBibliothequeService, BibliothequeService>();
+            builder.Services.AddScoped<ILivreService, LivreService>();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(
@@ -41,11 +67,12 @@ namespace API_Labo
                 );
 
             builder.Services.AddAuthorization(options => {
-                options.AddPolicy("adminRequired", policy => policy.RequireRole("Admin"));
-                options.AddPolicy("userRequired", policy => policy.RequireAuthenticatedUser());
+                options.AddPolicy("AdminRequired", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("EmployeeRequired", policy => policy.RequireRole("Admin", "Employee"));
+                options.AddPolicy("UserRequired", policy => policy.RequireAuthenticatedUser());
             });
 
-            builder.Services.AddCors(options => options.AddPolicy("MyPolicy",
+            builder.Services.AddCors(options => options.AddPolicy("CorsPolicy",
                 o => o.AllowCredentials()
                       .WithOrigins("https://localhost:7041")
                       .AllowAnyHeader()
@@ -65,10 +92,13 @@ namespace API_Labo
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseCors("MyPolicy");
+            app.UseCors("CorsPolicy");
             //app.UseCors(o => o.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
 
-            app.MapControllers();
+            if (app.Environment.IsDevelopment())
+                app.MapControllers().AllowAnonymous();
+            else
+                app.MapControllers();
 
             app.Run();
         }

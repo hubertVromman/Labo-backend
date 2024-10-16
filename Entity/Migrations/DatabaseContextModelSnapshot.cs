@@ -16,18 +16,18 @@ namespace EntityFramework.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("EntityFramework.Entities.Auteur", b =>
                 {
-                    b.Property<int>("AuteurId")
+                    b.Property<int?>("AuteurId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuteurId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("AuteurId"));
 
                     b.Property<string>("Nom")
                         .IsRequired()
@@ -204,13 +204,16 @@ namespace EntityFramework.Migrations
                     b.Property<int>("EmprunteurId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("EstRendu")
+                        .HasColumnType("bit");
+
                     b.HasKey("PretId");
 
                     b.HasIndex("BibliothequeId");
 
                     b.HasIndex("EmprunteurId");
 
-                    b.ToTable("emprunts");
+                    b.ToTable("prets");
                 });
 
             modelBuilder.Entity("EntityFramework.Entities.PretLivre", b =>
@@ -228,7 +231,7 @@ namespace EntityFramework.Migrations
 
                     b.HasIndex("LivreId");
 
-                    b.ToTable("emprunLivres");
+                    b.ToTable("pretsLivres");
                 });
 
             modelBuilder.Entity("EntityFramework.Entities.StockLivre", b =>
@@ -290,17 +293,27 @@ namespace EntityFramework.Migrations
 
                     b.Property<string>("MotDePasse")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
 
                     b.Property<string>("Nom")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
 
                     b.Property<string>("Prenom")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UtilisateurId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("utilisateurs");
 
@@ -308,10 +321,11 @@ namespace EntityFramework.Migrations
                         new
                         {
                             UtilisateurId = -1,
-                            Email = "Hello@gmail.com",
-                            MotDePasse = "1234",
+                            Email = "hello@gmail.com",
+                            MotDePasse = "$2a$11$8AaJxUgo7ifbZZHsrVEn5O/jRhcYvAvZqfSkHf29IDDAqw//7p346",
                             Nom = "Noel",
-                            Prenom = "Benjamin"
+                            Prenom = "Benjamin",
+                            Role = "Admin"
                         });
                 });
 

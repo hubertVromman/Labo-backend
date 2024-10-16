@@ -11,45 +11,51 @@ using API_Labo.Mapper;
 using BLL_Labo.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using BLL_Labo.Services;
-using API_Labo.Models.DTO;
+using API_Labo.Models.Forms;
+using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 
 namespace API_Labo.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VenteController : ControllerBase
-    {
-        private readonly IVenteService _venteService;
+    public class VenteController(IVenteService _venteService) : ControllerBase {
 
-        public VenteController(IVenteService venteService)
-        {
-            _venteService = venteService;
-        }
-
+        [Authorize("EmployeeRequired")]
         [HttpGet]
         public IActionResult Get() {
             try {
                 return Ok(_venteService.Get());
             } catch (Exception ex) {
-                return NotFound();
+                return NotFound(ex.Message);
             }
         }
 
-        [HttpGet("id")]
+        [Authorize("EmployeeRequired")]
+        [HttpGet("{id}")]
         public IActionResult Get(int id) {
             try {
                 return Ok(_venteService.Get(id));
             } catch (Exception ex) {
-                return NotFound();
+                return NotFound(ex.Message);
             }
         }
 
-
+        [Authorize("UserRequired")]
         [HttpPost]
         public IActionResult Create([FromBody] Commande commande) {
+
+            string tokenFromRequest = HttpContext.Request.Headers["Authorization"];
+            string token = tokenFromRequest.Substring(7, tokenFromRequest.Length - 7);
+            JwtSecurityToken jwt = new JwtSecurityToken(token);
+            int utilisateurId = int.Parse(jwt.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+
             try {
-                int result = _venteService.Create(commande.ToBLL());
+                BLL_Labo.Entities.Commande c = commande.ToBLL();
+                c.UtilisateurId = utilisateurId;
+                int result = _venteService.Create(c);
                 return Ok(result);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);

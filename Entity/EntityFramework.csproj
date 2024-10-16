@@ -15,8 +15,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Common_Labo\Common_Labo.csproj" />
-  </ItemGroup>
-
 </Project>
