@@ -15,10 +15,28 @@ namespace API_Labo.Controllers {
             return Ok(_livreService.Get());
         }
 
-        [HttpGet("{id}")]
-        public IActionResult Get(int id) {
+        [HttpGet("{livreId}")]
+        public IActionResult Get(int livreId) {
             try {
-                return Ok(_livreService.Get(id));
+                return Ok(_livreService.Get(livreId).ToLivreDetails());
+            } catch (ArgumentOutOfRangeException ex) {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("ParAuteur/{auteurId}")]
+        public IActionResult ParAuteur(int auteurId) {
+            try {
+                return Ok(_livreService.ParAuteur(auteurId).Select(l => l.ToLivreDetails()));
+            } catch (ArgumentOutOfRangeException ex) {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("ParGenre/{genre}")]
+        public IActionResult ParGenre(string genre) {
+            try {
+                return Ok(_livreService.ParGenre(genre).Select(l => l.ToLivreDetails()));
             } catch (ArgumentOutOfRangeException ex) {
                 return NotFound(ex.Message);
             }

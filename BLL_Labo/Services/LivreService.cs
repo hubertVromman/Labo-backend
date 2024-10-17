@@ -17,7 +17,18 @@ namespace BLL_Labo.Services
         }
 
         public Livre Get(int id) {
-            return _dbContext.livres.Where(l => l.LivreId == id).FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
+            Livre l = _dbContext.livres.Where(l => l.LivreId == id).Include(l => l.LivreAuteur).ThenInclude(la => la.Auteur).FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
+            return l;
+        }
+
+        public IEnumerable<Livre> ParAuteur(int id) {
+            IEnumerable<Livre> l = _dbContext.livres.Include(l => l.LivreAuteur).ThenInclude(la => la.Auteur).Where(l => l.LivreAuteur.Select(la => la.AuteurId).Contains(id));
+            return l;
+        }
+
+        public IEnumerable<Livre> ParGenre(string genre) {
+            IEnumerable<Livre> l = _dbContext.livres.Where(l => l.Genre == genre).Include(l => l.LivreAuteur).ThenInclude(la => la.Auteur);
+            return l;
         }
 
         public IEnumerable<Livre> Get() {

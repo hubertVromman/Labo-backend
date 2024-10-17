@@ -1,5 +1,6 @@
 ﻿using BLL_Labo.Interfaces;
 using EntityFramework.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace BLL_Labo.Services
         }
 
         public Auteur Get(int id) {
-            return _dbContext.auteurs.Where(a => a.AuteurId == id).FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
+            return _dbContext.auteurs.Where(a => a.AuteurId == id).Include(a => a.LivreAuteur).ThenInclude(la => la.Livre).FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
         }
 
         public IEnumerable<Auteur> Get() {
@@ -27,15 +28,13 @@ namespace BLL_Labo.Services
             Auteur a = _dbContext.auteurs.Where(a => a.AuteurId == id).FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
             a.Nom = auteur.Nom;
             a.Prenom = auteur.Prenom;
-            _dbContext.SaveChanges();
-            return 1;
+            return _dbContext.SaveChanges();
         }
 
         public int Delete(int id) {
             Auteur a = _dbContext.auteurs.Where(a => a.AuteurId == id).FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
             _dbContext.Remove(a);
-            _dbContext.SaveChanges();
-            return 1;
+            return _dbContext.SaveChanges();
         }
     }
 }

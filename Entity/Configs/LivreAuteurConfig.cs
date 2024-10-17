@@ -36,6 +36,10 @@ namespace EntityFramework.Configs {
                 new LivreAuteur() {
                     LivreId = -3,
                     AuteurId = -1,
+                },
+                new LivreAuteur() {
+                    LivreId = -3,
+                    AuteurId = -2,
                 }
             );
         }

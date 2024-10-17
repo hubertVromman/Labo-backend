@@ -27,6 +27,11 @@ namespace EntityFramework.Configs {
                     AuteurId = -1,
                     Nom = "Durant",
                     Prenom = "Pierre",
+                },
+                new Auteur() {
+                    AuteurId = -2,
+                    Nom = "Nothomb",
+                    Prenom = "Amelie",
                 }
             );
         }

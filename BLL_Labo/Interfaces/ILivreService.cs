@@ -9,5 +9,7 @@ namespace BLL_Labo.Interfaces
         IEnumerable<Livre> Get();
         Livre Get(int id);
         int Update(int id, Livre livre);
+        IEnumerable<Livre> ParAuteur(int id);
+        IEnumerable<Livre> ParGenre(string genre);
     }
 }

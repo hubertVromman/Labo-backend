@@ -12,13 +12,13 @@ namespace API_Labo.Controllers {
 
         [HttpGet]
         public IActionResult Get() {
-            return Ok(_auteurService.Get());
+            return Ok(_auteurService.Get().Select(a => a.ToAuteur()));
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id) {
             try {
-                return Ok(_auteurService.Get(id));
+                return Ok(_auteurService.Get(id).ToAuteurDetails());
             } catch (ArgumentOutOfRangeException ex) {
                 return NotFound(ex.Message);
             }

@@ -6,5 +6,6 @@ namespace BLL_Labo.Interfaces {
         int Create(Commande commande);
         Vente? Get(int id);
         IEnumerable<Vente> Get();
+        IEnumerable<Vente> ParUtilisateur(int id);
     }
 }

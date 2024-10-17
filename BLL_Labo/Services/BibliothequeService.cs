@@ -86,7 +86,11 @@ namespace BLL_Labo.Services
         }
 
         public Bibliotheque AvecStock(int id) {
-            return _dbContext.bibliotheques.Where(b => b.BibliothequeId == id).Include(b => b.StockLivre).ThenInclude(sl => sl.Livre).FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
+            return _dbContext.bibliotheques
+                .Where(b => b.BibliothequeId == id)
+                .Include(b => b.StockLivre)
+                .ThenInclude(sl => sl.Livre)
+                .FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using API_Labo.Models.Forms;
+﻿using API_Labo.Mapper;
+using API_Labo.Models.Forms;
+using API_Labo.Models.DTO;
 using API_Labo.Tools;
 using BCrypt.Net;
 using BLL_Labo.Interfaces;
 using BLL_Labo.Services;
-using EntityFramework.Entities;
+using Entities = EntityFramework.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +13,7 @@ using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace TFCloud_Blazor_ApiSample.Controllers {
     [Route("api/[controller]")]
@@ -40,7 +43,7 @@ namespace TFCloud_Blazor_ApiSample.Controllers {
         public IActionResult Login([FromBody] LoginForm loginForm) {
             if (!ModelState.IsValid) return BadRequest();
 
-            Utilisateur? u = _utilisateurService.GetUserByEmail(loginForm.Email.ToLower());
+            Entities.Utilisateur? u = _utilisateurService.GetUserByEmail(loginForm.Email.ToLower());
 
             if (u is not null && BCrypt.Net.BCrypt.Verify(loginForm.MotDePasse, u.MotDePasse)) {
                 string token = jwt.GenerateToken(u);
@@ -52,7 +55,7 @@ namespace TFCloud_Blazor_ApiSample.Controllers {
         [Authorize("AdminRequired")]
         [HttpGet]
         public IActionResult GetAll() {
-            return Ok(_utilisateurService.GetAll());
+            return Ok(_utilisateurService.GetAll().Select(u => u.ToUtilisateur()));
         }
 
         [Authorize("UserRequired")]
@@ -62,7 +65,11 @@ namespace TFCloud_Blazor_ApiSample.Controllers {
             string token = tokenFromRequest.Substring(7, tokenFromRequest.Length - 7);
             JwtSecurityToken jwt = new JwtSecurityToken(token);
             string email = jwt.Claims.First(x => x.Type == ClaimTypes.Email).Value;
-            return Ok(_utilisateurService.GetUserByEmail(email));
+            try {
+                return Ok(_utilisateurService.GetUserByEmail(email).ToUtilisateur());
+            } catch (ArgumentException ex) {
+                return NotFound(ex.Message);
+            }
         }
 
         [Authorize("AdminRequired")]

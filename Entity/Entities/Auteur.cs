@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EntityFramework.Entities {
     public class Auteur {
-        public int? AuteurId { get; set; }
+        public int AuteurId { get; set; }
         public string Nom { get; set; }
         public string Prenom { get; set; }
 

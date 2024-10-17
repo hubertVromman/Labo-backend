@@ -1,4 +1,5 @@
-﻿using API_Labo.Models.Forms;
+﻿using API_Labo.Models.DTO;
+using API_Labo.Models.Forms;
 using BLL = BLL_Labo.Entities;
 using Entity = EntityFramework.Entities;
 
@@ -53,6 +54,83 @@ namespace API_Labo.Mapper
                 DateParution = l.DateParution,
                 Genre = l.Genre,
                 PrixVente = l.PrixVente,
+            };
+        }
+
+        public static Livre ToLivre(this Entity.Livre l) {
+            return new Livre() {
+                LivreId = l.LivreId,
+                ISBN = l.ISBN,
+                Titre = l.Titre,
+                DateParution = l.DateParution,
+                Genre = l.Genre,
+                PrixVente = l.PrixVente,
+            };
+        }
+
+        public static LivreDetails ToLivreDetails(this Entity.Livre l) {
+            return new LivreDetails() {
+                LivreId = l.LivreId,
+                ISBN = l.ISBN,
+                Titre = l.Titre,
+                DateParution = l.DateParution,
+                Genre = l.Genre,
+                PrixVente = l.PrixVente,
+                Auteurs = l.LivreAuteur.Select(la => la.Auteur.ToAuteur()).ToList(),
+            };
+        }
+
+        public static Auteur ToAuteur(this Entity.Auteur a) {
+            return new Auteur() {
+                AuteurId = a.AuteurId,
+                Nom = a.Nom,
+                Prenom = a.Prenom,
+            };
+        }
+
+        public static AuteurDetails ToAuteurDetails(this Entity.Auteur a) {
+            return new AuteurDetails() {
+                AuteurId = a.AuteurId,
+                Nom = a.Nom,
+                Prenom = a.Prenom,
+                Livres = a.LivreAuteur.Select(la => la.Livre.ToLivre()).ToList(),
+            };
+        }
+
+        public static Bibliotheque ToBibliotheque(this Entity.Bibliotheque b) {
+            return new Bibliotheque() {
+                BibliothequeId = b.BibliothequeId,
+                Nom = b.Nom,
+                Adresse = b.Adresse,
+                NumeroTelephone = b.NumeroTelephone,
+            };
+        }
+
+        public static BibliothequeStock ToBibliothequeStock(this Entity.Bibliotheque b) {
+            return new BibliothequeStock() {
+                BibliothequeId = b.BibliothequeId,
+                Nom = b.Nom,
+                Adresse = b.Adresse,
+                NumeroTelephone = b.NumeroTelephone,
+                StockLivre = b.StockLivre.Select(sl => sl.ToStockLivre()).ToList(),
+            };
+        }
+
+        public static StockLivre ToStockLivre(this Entity.StockLivre sl) {
+            return new StockLivre() {
+                Livre = sl.Livre.ToLivre(),
+                StockLocation = sl.StockLocation,
+                StockAchat = sl.StockAchat,
+            };
+        }
+
+        public static Utilisateur ToUtilisateur(this Entity.Utilisateur u) {
+            return new Utilisateur() {
+                UtilisateurId = u.UtilisateurId,
+                Email = u.Email,
+                Nom = u.Nom,
+                Prenom = u.Prenom,
+                Role = u.Role,
             };
         }
     }

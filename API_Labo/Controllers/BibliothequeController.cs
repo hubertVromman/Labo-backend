@@ -13,13 +13,13 @@ namespace API_Labo.Controllers {
 
         [HttpGet]
         public IActionResult Get() {
-            return Ok(_bibliothequeService.Get());
+            return Ok(_bibliothequeService.Get().Select(b => b.ToBibliotheque()));
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id) {
             try {
-                return Ok(_bibliothequeService.Get(id));
+                return Ok(_bibliothequeService.Get(id).ToBibliotheque());
             } catch (ArgumentOutOfRangeException ex) {
                 return NotFound(ex.Message);
             }
@@ -28,7 +28,7 @@ namespace API_Labo.Controllers {
         [HttpGet("AvecStock/{id}")]
         public IActionResult GetAvecStock(int id) {
             try {
-                return Ok(_bibliothequeService.AvecStock(id));
+                return Ok(_bibliothequeService.AvecStock(id).ToBibliothequeStock());
             } catch (ArgumentOutOfRangeException ex) {
                 return NotFound(ex.Message);
             }

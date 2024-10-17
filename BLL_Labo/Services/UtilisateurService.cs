@@ -28,12 +28,12 @@ namespace BLL_Labo.Services
             return u.UtilisateurId != 0;
         }
 
-        public List<Utilisateur> GetAll() {
-            return _dbContext.utilisateurs.ToList();
+        public IEnumerable<Utilisateur> GetAll() {
+            return _dbContext.utilisateurs;
         }
 
-        public Utilisateur? GetUserByEmail(string email) {
-            return _dbContext.utilisateurs.Where(u => u.Email == email).FirstOrDefault();
+        public Utilisateur GetUserByEmail(string email) {
+            return _dbContext.utilisateurs.Where(u => u.Email == email).FirstOrDefault() ?? throw new ArgumentException();
         }
         public int ChangeRole(int id, string nouveauRole) {
             Utilisateur u = _dbContext.utilisateurs.Where(u => u.UtilisateurId == id).FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
