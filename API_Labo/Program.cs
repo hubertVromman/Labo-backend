@@ -1,5 +1,4 @@
 using API_Labo.Controllers;
-using API_Labo.Tools;
 using BLL_Labo.Interfaces;
 using BLL_Labo.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -43,7 +42,7 @@ namespace API_Labo {
             });
 
             builder.Services.AddScoped<DatabaseContext>();
-            builder.Services.AddScoped<JwtGenerator>();
+            builder.Services.AddScoped<AuthService>();
 
             builder.Services.AddScoped<IVenteService, VenteService>();
             builder.Services.AddScoped<IPretService, PretService>();
@@ -57,7 +56,7 @@ namespace API_Labo {
                     options => {
                         options.TokenValidationParameters = new TokenValidationParameters() {
                             ValidateIssuerSigningKey = true,
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtGenerator.secretKey)),
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AuthService.secretKey)),
                             ValidateLifetime = true,
                             ValidateIssuer = true,
                             ValidIssuer = "monapi.com",
@@ -95,9 +94,9 @@ namespace API_Labo {
             app.UseCors("CorsPolicy");
             //app.UseCors(o => o.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
 
-            if (app.Environment.IsDevelopment())
-                app.MapControllers().AllowAnonymous();
-            else
+            //if (app.Environment.IsDevelopment())
+            //    app.MapControllers().AllowAnonymous();
+            //else
                 app.MapControllers();
 
             app.Run();

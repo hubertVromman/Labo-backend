@@ -10,7 +10,6 @@ namespace API_Labo.Mapper
             return new BLL.Commande() {
                 LivreIdQuantite = commande.LivreIdQuantite,
                 BibliothequeId = commande.BibliothequeId,
-                //UtilisateurId = commande.UtilisateurId,
             };
         }
 
@@ -54,6 +53,13 @@ namespace API_Labo.Mapper
                 DateParution = l.DateParution,
                 Genre = l.Genre,
                 PrixVente = l.PrixVente,
+            };
+        }
+
+        public static BLL.Token ToBLL(this TokenForm t) {
+            return new BLL.Token() {
+                AccessToken = t.AccessToken,
+                RefreshToken = t.RefreshToken,
             };
         }
 

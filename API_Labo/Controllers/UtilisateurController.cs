@@ -1,7 +1,6 @@
 ﻿using API_Labo.Mapper;
 using API_Labo.Models.Forms;
 using API_Labo.Models.DTO;
-using API_Labo.Tools;
 using BCrypt.Net;
 using BLL_Labo.Interfaces;
 using BLL_Labo.Services;
@@ -14,11 +13,12 @@ using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using BLL_Labo.Entities;
 
 namespace TFCloud_Blazor_ApiSample.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class UtilisateurController(IUtilisateurService _utilisateurService, JwtGenerator jwt) : ControllerBase {
+    public class UtilisateurController(IUtilisateurService _utilisateurService, AuthService _authService) : ControllerBase {
 
         [HttpPost("Register")]
         public IActionResult RegisterUser([FromBody] RegisterForm form) {
@@ -46,10 +46,26 @@ namespace TFCloud_Blazor_ApiSample.Controllers {
             Entities.Utilisateur? u = _utilisateurService.GetUserByEmail(loginForm.Email.ToLower());
 
             if (u is not null && BCrypt.Net.BCrypt.Verify(loginForm.MotDePasse, u.MotDePasse)) {
-                string token = jwt.GenerateToken(u);
-                return Ok(token);
+                try {
+                    Token t = _authService.GenerateTokensFromUser(u);
+                    return Ok(t);
+                } catch {
+                    return BadRequest("Erreur de sauvegarde du token");
+                }
             }
             return BadRequest("Mot de passe invalide");
+        }
+
+        [HttpPost("RefreshToken")]
+        public IActionResult RefreshToken([FromBody] TokenForm token) {
+            if (!ModelState.IsValid) return BadRequest();
+
+            try {
+                Token t = _authService.RefreshToken(token.ToBLL());
+                return Ok(t);
+            } catch (Exception ex) { 
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize("AdminRequired")]
