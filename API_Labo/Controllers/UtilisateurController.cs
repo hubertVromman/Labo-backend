@@ -1,7 +1,6 @@
 ﻿using API_Labo.Mapper;
 using API_Labo.Models.Forms;
 using API_Labo.Models.DTO;
-using BCrypt.Net;
 using BLL_Labo.Interfaces;
 using BLL_Labo.Services;
 using Entities = EntityFramework.Entities;
@@ -24,12 +23,12 @@ namespace TFCloud_Blazor_ApiSample.Controllers {
         public IActionResult RegisterUser([FromBody] RegisterForm form) {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            string hashpwd = BCrypt.Net.BCrypt.HashPassword(form.MotDePasse);
+            //string hashpwd = BCrypt.Net.BCrypt.HashPassword(form.MotDePasse);
 
             try {
                 _utilisateurService.Register(
                     email: form.Email.ToLower(),
-                    motDePasse: hashpwd,
+                    motDePasse: form.MotDePasse,
                     nom: form.Nom,
                     prenom: form.Prenom
                 );
@@ -43,17 +42,18 @@ namespace TFCloud_Blazor_ApiSample.Controllers {
         public IActionResult Login([FromBody] LoginForm loginForm) {
             if (!ModelState.IsValid) return BadRequest();
 
-            Entities.Utilisateur? u = _utilisateurService.GetUserByEmail(loginForm.Email.ToLower());
-
-            if (u is not null && BCrypt.Net.BCrypt.Verify(loginForm.MotDePasse, u.MotDePasse)) {
-                try {
-                    Token t = _authService.GenerateTokensFromUser(u);
-                    return Ok(t);
-                } catch {
-                    return BadRequest("Erreur de sauvegarde du token");
-                }
+            Entities.Utilisateur u;
+            try {
+                u = _utilisateurService.Login(loginForm.Email.ToLower(), loginForm.MotDePasse);
+                Token t = _authService.GenerateTokensFromUser(u);
+                return Ok(t);
+            } catch (ArgumentException ex) {
+                return BadRequest("Mot de passe invalide");
+            } catch (DbUpdateException ex) {
+                return BadRequest("Erreur de sauvegarde du token");
             }
-            return BadRequest("Mot de passe invalide");
+
+            //&& BCrypt.Net.BCrypt.Verify(loginForm.MotDePasse, u.MotDePasse)) {
         }
 
         [HttpPost("RefreshToken")]

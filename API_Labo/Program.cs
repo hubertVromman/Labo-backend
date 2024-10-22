@@ -2,6 +2,7 @@ using API_Labo.Controllers;
 using BLL_Labo.Interfaces;
 using BLL_Labo.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -41,8 +42,11 @@ namespace API_Labo {
 
             });
 
+            builder.Services.AddTransient<string>(sp => builder.Configuration.GetConnectionString("default")!);
             builder.Services.AddScoped<DatabaseContext>();
             builder.Services.AddScoped<AuthService>();
+            builder.Services.AddTransient<SqlConnection>(sp =>
+                new SqlConnection(builder.Configuration.GetConnectionString("default")));
 
             builder.Services.AddScoped<IVenteService, VenteService>();
             builder.Services.AddScoped<IPretService, PretService>();

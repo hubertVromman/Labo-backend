@@ -2,7 +2,7 @@
 using EntityFramework.Entities;
 using Microsoft.EntityFrameworkCore;
 
-public class DatabaseContext : DbContext {
+public class DatabaseContext(string _connectionString) : DbContext {
     public DbSet<Auteur> auteurs { get; set; }
     public DbSet<Bibliotheque> bibliotheques { get; set; }
     public DbSet<Pret> prets { get; set; }
@@ -21,6 +21,6 @@ public class DatabaseContext : DbContext {
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-        optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Bibliotheque;Integrated Security=True;Connect Timeout=60;Encrypt=False");
+        optionsBuilder.UseSqlServer(_connectionString);
     }
 }
