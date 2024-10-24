@@ -11,25 +11,24 @@ using System.Threading.Tasks;
 
 namespace BLL_Labo.Services
 {
-    public class UtilisateurService : IUtilisateurService {
-        private readonly DatabaseContext _dbContext;
-        private readonly SqlConnection _connection;
-
-        public UtilisateurService(DatabaseContext ctx, SqlConnection connection) {
-            _dbContext = ctx;
-            _connection = connection;
-        }
+    public class UtilisateurService(DatabaseContext _dbContext, SqlConnection _connection) : IUtilisateurService {
 
         public bool Register(string email, string motDePasse, string nom, string prenom) {
-            Utilisateur u = new Utilisateur() {
-                Email = email,
-                MotDePasse = motDePasse.HashTo64(),
-                Nom = nom,
-                Prenom = prenom
-            };
-            _dbContext.Add(u);
-            _dbContext.SaveChanges();
-            return u.UtilisateurId != 0;
+            return _connection.Execute(
+                "Register",
+                new { email, motDePasse = motDePasse.HashTo64(), nom, prenom },
+                commandType: CommandType.StoredProcedure
+            ) > 0;
+
+            //Utilisateur u = new Utilisateur() {
+            //    Email = email,
+            //    MotDePasse = motDePasse.HashTo64(),
+            //    Nom = nom,
+            //    Prenom = prenom
+            //};
+            //_dbContext.Add(u);
+            //_dbContext.SaveChanges();
+            //return u.UtilisateurId != 0;
         }
 
         public Utilisateur Login(string email, string motDePasse) {

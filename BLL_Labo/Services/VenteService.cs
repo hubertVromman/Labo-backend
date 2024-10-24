@@ -11,13 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BLL_Labo.Services {
-    public class VenteService : IVenteService {
-
-        private DatabaseContext _dbContext;
-
-        public VenteService(DatabaseContext db) {
-            _dbContext = db;
-        }
+    public class VenteService(DatabaseContext _dbContext) : IVenteService {
 
         public IEnumerable<Vente> Get() {
             IEnumerable<Vente> ventes = _dbContext.ventes.Include(v => v.VenteLivre).ThenInclude(vl => vl.Livre).Include(v => v.Acheteur).Include(v => v.Bibliotheque);

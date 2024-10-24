@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using BLL_Labo.Entities;
+using Microsoft.Data.SqlClient;
 
 namespace TFCloud_Blazor_ApiSample.Controllers {
     [Route("api/[controller]")]
@@ -33,7 +34,7 @@ namespace TFCloud_Blazor_ApiSample.Controllers {
                     prenom: form.Prenom
                 );
                 return Ok("Inscription réussie");
-            } catch (DbUpdateException ex) {
+            } catch (SqlException ex) {
                 return BadRequest(ex.Message);
             }
         }

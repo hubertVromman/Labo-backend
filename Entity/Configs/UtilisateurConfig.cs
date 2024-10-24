@@ -34,7 +34,7 @@ namespace EntityFramework.Configs {
                 new Utilisateur() {
                     UtilisateurId = -1,
                     Email = "hello@gmail.com",
-                    MotDePasse = "3aJ7NUldI5y7r3eiOP2BEC87BGaV41jrDL4E8/wWydFgSYVEhPbI2WalHlfEdXXHzxVtBQYnkK/J/tCaAizsbg==",
+                    MotDePasse = "숓䯧䙪㾢鹟聽ㄱ碓⣐辩멆﯈幓엍䢕ᑉ䟎繧﵊뚫㝹䬪⭣뱔ᄦ䣩駽",
                     Nom = "Noel",
                     Prenom = "Benjamin",
                     Role = "Admin"
