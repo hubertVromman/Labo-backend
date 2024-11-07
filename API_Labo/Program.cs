@@ -65,6 +65,7 @@ namespace API_Labo {
                             ValidateIssuer = true,
                             ValidIssuer = "monapi.com",
                             ValidateAudience = false,
+                            ClockSkew = TimeSpan.Zero,
                         };
                     }
                 );
@@ -91,11 +92,12 @@ namespace API_Labo {
 
             app.UseHttpsRedirection();
 
+            app.UseCors("CorsPolicy");
+
             // OBLIGATOIREMENT DANS CE SENS
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseCors("CorsPolicy");
             //app.UseCors(o => o.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
 
             //if (app.Environment.IsDevelopment())
