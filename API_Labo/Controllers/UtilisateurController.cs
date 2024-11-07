@@ -59,6 +59,8 @@ namespace TFCloud_Blazor_ApiSample.Controllers {
 
         [HttpPost("RefreshToken")]
         public IActionResult RefreshToken([FromBody] TokenForm token) {
+            JwtSecurityToken jwt = new JwtSecurityToken(token.AccessToken);
+            Console.WriteLine(jwt.ValidTo);
             if (!ModelState.IsValid) return BadRequest();
 
             try {
@@ -78,9 +80,12 @@ namespace TFCloud_Blazor_ApiSample.Controllers {
         [Authorize("UserRequired")]
         [HttpGet("Profile")]
         public IActionResult GetUserInfo() {
-            string tokenFromRequest = HttpContext.Request.Headers["Authorization"];
+            string? tokenFromRequest = HttpContext.Request.Headers["Authorization"];
+            if (tokenFromRequest is null)
+                return Unauthorized();
             string token = tokenFromRequest.Substring(7, tokenFromRequest.Length - 7);
             JwtSecurityToken jwt = new JwtSecurityToken(token);
+            Console.WriteLine(jwt.ValidTo);
             string email = jwt.Claims.First(x => x.Type == ClaimTypes.Email).Value;
             try {
                 return Ok(_utilisateurService.GetUserByEmail(email).ToUtilisateur());

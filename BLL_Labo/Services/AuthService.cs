@@ -35,7 +35,7 @@ namespace BLL_Labo.Services {
             JwtSecurityToken token = new JwtSecurityToken(
                 claims: myclaims,
                 signingCredentials: credentials,
-                expires: DateTime.Now.AddMinutes(20),
+                expires: DateTime.Now.AddSeconds(3),
                 issuer: "monapi.com"
             );
 

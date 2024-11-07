@@ -77,7 +77,7 @@ namespace API_Labo {
 
             builder.Services.AddCors(options => options.AddPolicy("CorsPolicy",
                 o => o.AllowCredentials()
-                      .WithOrigins("https://localhost:7041")
+                      .WithOrigins("https://localhost:7041", "http://localhost:4200")
                       .AllowAnyHeader()
                       .AllowAnyMethod()));
 
