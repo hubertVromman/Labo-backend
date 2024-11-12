@@ -6,7 +6,7 @@
         public string MotDePasse { get; set; }
         public string Nom { get; set; }
         public string Prenom { get; set; }
-        public string Role { get; set; } = "Utilisateur";
+        public string Role { get; set; }
         public string? AccessToken { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiration { get; set; }

@@ -27,6 +27,9 @@ namespace EntityFramework.Configs {
             builder.Property(nameof(Utilisateur.Prenom))
                .IsRequired()
                .HasMaxLength(320);
+            builder.Property(nameof(Utilisateur.Role))
+              .HasDefaultValue("Utilisateur")
+              .HasMaxLength(320);
 
             builder.HasIndex(u => u.Email).IsUnique();
 

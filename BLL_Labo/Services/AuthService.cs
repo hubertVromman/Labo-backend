@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BLL_Labo.Services {
@@ -35,7 +36,7 @@ namespace BLL_Labo.Services {
             JwtSecurityToken token = new JwtSecurityToken(
                 claims: myclaims,
                 signingCredentials: credentials,
-                expires: DateTime.UtcNow.AddSeconds(3),
+                expires: DateTime.Now.AddMinutes(20),
                 issuer: "monapi.com"
             );
 
@@ -51,7 +52,8 @@ namespace BLL_Labo.Services {
             return Convert.ToBase64String(randomNumber);
         }
 
-        public Token GenerateTokensFromUser(Utilisateur u, bool updateExpiration = true) {
+        public Token GenerateTokensFromUser(Utilisateur utilisateur, bool updateExpiration = true) {
+            Utilisateur u = _dbContext.utilisateurs.First(u => u.UtilisateurId == utilisateur.UtilisateurId);
             Token t = new Token() {
                 AccessToken = GenerateAccessToken(u),
                 RefreshToken = GenerateRefreshToken(),
@@ -64,6 +66,8 @@ namespace BLL_Labo.Services {
 
             if (u.RefreshTokenExpiration > u.MaxRefreshTokenExpiration)
                 u.RefreshTokenExpiration = u.MaxRefreshTokenExpiration;
+
+            Console.WriteLine(JsonSerializer.Serialize(u));
 
             _dbContext.SaveChanges();
             return t;
