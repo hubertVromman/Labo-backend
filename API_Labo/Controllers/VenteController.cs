@@ -27,7 +27,7 @@ namespace API_Labo.Controllers
         [HttpGet]
         public IActionResult Get() {
             try {
-                return Ok(_venteService.Get());
+                return Ok(_venteService.Get().Select(v => v.ToVente()));
             } catch (Exception ex) {
                 return NotFound(ex.Message);
             }
@@ -37,7 +37,7 @@ namespace API_Labo.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id) {
             try {
-                return Ok(_venteService.Get(id));
+                return Ok(_venteService.Get(id).ToVente());
             } catch (Exception ex) {
                 return NotFound(ex.Message);
             }
@@ -74,7 +74,7 @@ namespace API_Labo.Controllers
             int utilisateurId = int.Parse(jwt.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
             try {
-                return Ok(_venteService.ParUtilisateur(utilisateurId));
+                return Ok(_venteService.ParUtilisateur(utilisateurId).Select(v => v.ToVente()));
             } catch (ArgumentOutOfRangeException ex) {
                 return NotFound(ex.Message);
             } catch (Exception ex) {

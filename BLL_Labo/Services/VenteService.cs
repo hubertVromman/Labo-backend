@@ -15,28 +15,11 @@ namespace BLL_Labo.Services {
 
         public IEnumerable<Vente> Get() {
             IEnumerable<Vente> ventes = _dbContext.ventes.Include(v => v.VenteLivre).ThenInclude(vl => vl.Livre).Include(v => v.Acheteur).Include(v => v.Bibliotheque);
-            foreach (Vente v in ventes) {
-                v.Acheteur.Achats = null;
-                foreach (VenteLivre venteLivre in v.VenteLivre) {
-                    venteLivre.Vente = null;
-                    venteLivre.Livre.VenteLivre = null;
-                }
-                v.Bibliotheque.Ventes = null;
-            }
             return ventes;
         }
 
-        public Vente? Get(int id) {
-            Vente? v = _dbContext.ventes.Where(v => v.VenteId == id).Include(v => v.VenteLivre).ThenInclude(vl => vl.Livre).Include(v => v.Acheteur).Include(v => v.Bibliotheque).FirstOrDefault();
-            if (v is null)
-                throw new IndexOutOfRangeException();
-            v.Acheteur.Achats = null;
-            foreach (VenteLivre venteLivre in v.VenteLivre)
-            {
-                venteLivre.Vente = null;
-                venteLivre.Livre.VenteLivre = null;
-            }
-            v.Bibliotheque.Ventes = null;
+        public Vente Get(int id) {
+            Vente? v = _dbContext.ventes.Where(v => v.VenteId == id).Include(v => v.VenteLivre).ThenInclude(vl => vl.Livre).Include(v => v.Acheteur).Include(v => v.Bibliotheque).FirstOrDefault() ?? throw new IndexOutOfRangeException();
             return v;
         }
 
@@ -54,7 +37,7 @@ namespace BLL_Labo.Services {
 
             foreach (StockLivre sl in stockLivres) {
                 if (sl.StockAchat < commande.LivreIdQuantite[sl.LivreId]) {
-                    throw new Exception($"Stock insufisant pour le livre {sl.LivreId}: {sl.StockAchat} en stock mais {commande.LivreIdQuantite[sl.LivreId]} demandée");
+                    throw new Exception($"Stock insufisant pour le livre {sl.LivreId}: {sl.StockAchat} en stock mais {commande.LivreIdQuantite[sl.LivreId]} demandé");
                 }
             }
 
@@ -81,14 +64,6 @@ namespace BLL_Labo.Services {
 
         public IEnumerable<Vente> ParUtilisateur(int id) {
             IEnumerable<Vente> ventes = _dbContext.ventes.Where(p => p.AcheteurId == id).Include(v => v.Acheteur).Include(v => v.VenteLivre).ThenInclude(vl => vl.Livre).Include(v => v.Bibliotheque);
-            foreach (Vente v in ventes) {
-                v.Acheteur.Achats = null;
-                foreach (VenteLivre venteLivre in v.VenteLivre) {
-                    venteLivre.Vente = null;
-                    venteLivre.Livre.VenteLivre = null;
-                }
-                v.Bibliotheque.Ventes = null;
-            }
             return ventes;
         }
     }

@@ -139,5 +139,50 @@ namespace API_Labo.Mapper
                 Role = u.Role,
             };
         }
+
+        public static Pret ToPret(this Entity.Pret p)
+        {
+            return new Pret()
+            {
+                PretId = p.PretId,
+                DateDebut = p.DateDebut,
+                DateFin = p.DateFin,
+                PretLivre = p.PretLivre.Select(pl => pl.ToPretLivre()).ToList(),
+                EstRendu = p.EstRendu,
+                Emprunteur = p.Emprunteur.ToUtilisateur(),
+                Bibliotheque = p.Bibliotheque.ToBibliotheque(),
+            };
+        }
+
+        public static PretLivre ToPretLivre(this Entity.PretLivre pl)
+        {
+            return new PretLivre()
+            {
+                Livre = pl.Livre.ToLivre(),
+                Quantite = pl.Quantite,
+            };
+        }
+
+        public static Vente ToVente(this Entity.Vente v)
+        {
+            return new Vente()
+            {
+                VenteId = v.VenteId,
+                DateVente = v.DateVente,
+                VenteLivre = v.VenteLivre.Select(vl => vl.ToVenteLivre()).ToList(),
+                Acheteur = v.Acheteur.ToUtilisateur(),
+                Bibliotheque = v.Bibliotheque.ToBibliotheque(),
+            };
+        }
+
+        public static VenteLivre ToVenteLivre(this Entity.VenteLivre vl)
+        {
+            return new VenteLivre()
+            {
+                Livre = vl.Livre.ToLivre(),
+                Quantite = vl.Quantite,
+                PrixVente = vl.PrixVente,
+            };
+        }
     }
 }

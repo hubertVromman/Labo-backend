@@ -17,7 +17,7 @@ namespace API_Labo.Controllers
         [HttpGet]
         public IActionResult Get() {
             try {
-                return Ok(_pretService.Get());
+                return Ok(_pretService.Get().Select(p => p.ToPret()).ToList();
             } catch (Exception ex) {
                 return NotFound(ex.Message);
             }
@@ -27,7 +27,7 @@ namespace API_Labo.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id) {
             try {
-                return Ok(_pretService.Get(id));
+                return Ok(_pretService.Get(id).ToPret());
             } catch (Exception ex) {
                 return NotFound(ex.Message);
             }
@@ -83,7 +83,7 @@ namespace API_Labo.Controllers
             int utilisateurId = int.Parse(jwt.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
             try {
-                return Ok(_pretService.ParUtilisateur(utilisateurId));
+                return Ok(_pretService.ParUtilisateur(utilisateurId).Select(p => p.ToPret()));
             } catch (ArgumentOutOfRangeException ex) {
                 return NotFound(ex.Message);
             } catch (Exception ex) {

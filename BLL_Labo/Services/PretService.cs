@@ -16,27 +16,11 @@ namespace BLL_Labo.Services
 
         public IEnumerable<Pret> Get() {
             IEnumerable<Pret> prets = _dbContext.prets.Include(v => v.PretLivre).ThenInclude(vl => vl.Livre).Include(v => v.Emprunteur).Include(v => v.Bibliotheque);
-            foreach (Pret p in prets) {
-                p.Emprunteur.Emprunts = null;
-                foreach (PretLivre pretLivre in p.PretLivre) {
-                    pretLivre.Pret = null;
-                    pretLivre.Livre.PretLivre = null;
-                }
-                p.Bibliotheque.Prets = null;
-            }
             return prets;
         }
 
         public Pret Get(int id) {
-            Pret? p = _dbContext.prets.Where(v => v.PretId == id).Include(v => v.PretLivre).ThenInclude(vl => vl.Livre).Include(v => v.Emprunteur).Include(v => v.Bibliotheque).FirstOrDefault();
-            if (p is null)
-                throw new IndexOutOfRangeException();
-            p.Emprunteur.Emprunts = null;
-            foreach (PretLivre pretLivre in p.PretLivre) {
-                pretLivre.Pret = null;
-                pretLivre.Livre.PretLivre = null;
-            }
-            p.Bibliotheque.Prets = null;
+            Pret? p = _dbContext.prets.Where(v => v.PretId == id).Include(v => v.PretLivre).ThenInclude(vl => vl.Livre).Include(v => v.Emprunteur).Include(v => v.Bibliotheque).FirstOrDefault() ?? throw new IndexOutOfRangeException();
             return p;
         }
 
@@ -54,7 +38,7 @@ namespace BLL_Labo.Services
 
             foreach (StockLivre sl in stockLivres) {
                 if (sl.StockLocation < commande.LivreIdQuantite[sl.LivreId]) {
-                    throw new Exception($"Stock insufisant pour le livre {sl.LivreId}: {sl.StockAchat} en stock mais {commande.LivreIdQuantite[sl.LivreId]} demandée");
+                    throw new Exception($"Stock insufisant pour le livre {sl.LivreId}: {sl.StockLocation} en stock mais {commande.LivreIdQuantite[sl.LivreId]} demandé");
                 }
             }
 
@@ -98,14 +82,6 @@ namespace BLL_Labo.Services
 
         public IEnumerable<Pret> ParUtilisateur(int id) {
             IEnumerable<Pret> prets = _dbContext.prets.Where(p => p.EmprunteurId == id).Include(v => v.Emprunteur).Include(v => v.PretLivre).ThenInclude(vl => vl.Livre).Include(v => v.Bibliotheque);
-            foreach (Pret p in prets) {
-                p.Emprunteur.Emprunts = null;
-                foreach (PretLivre pretLivre in p.PretLivre) {
-                    pretLivre.Pret = null;
-                    pretLivre.Livre.PretLivre = null;
-                }
-                p.Bibliotheque.Prets = null;
-            }
             return prets;
         }
     }
