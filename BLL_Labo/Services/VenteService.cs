@@ -14,12 +14,12 @@ namespace BLL_Labo.Services {
     public class VenteService(DatabaseContext _dbContext) : IVenteService {
 
         public IEnumerable<Vente> Get() {
-            IEnumerable<Vente> ventes = _dbContext.ventes.Include(v => v.VenteLivre).ThenInclude(vl => vl.Livre).Include(v => v.Acheteur).Include(v => v.Bibliotheque);
+            IEnumerable<Vente> ventes = _dbContext.ventes.Include(v => v.VenteLivre).ThenInclude(vl => vl.Livre).ThenInclude(l => l.Genre).Include(v => v.Acheteur).Include(v => v.Bibliotheque);
             return ventes;
         }
 
         public Vente Get(int id) {
-            Vente? v = _dbContext.ventes.Where(v => v.VenteId == id).Include(v => v.VenteLivre).ThenInclude(vl => vl.Livre).Include(v => v.Acheteur).Include(v => v.Bibliotheque).FirstOrDefault() ?? throw new IndexOutOfRangeException();
+            Vente v = _dbContext.ventes.Where(v => v.VenteId == id).Include(v => v.VenteLivre).ThenInclude(vl => vl.Livre).ThenInclude(l => l.Genre).Include(v => v.Acheteur).Include(v => v.Bibliotheque).FirstOrDefault() ?? throw new IndexOutOfRangeException();
             return v;
         }
 
@@ -63,7 +63,7 @@ namespace BLL_Labo.Services {
         }
 
         public IEnumerable<Vente> ParUtilisateur(int id) {
-            IEnumerable<Vente> ventes = _dbContext.ventes.Where(p => p.AcheteurId == id).Include(v => v.Acheteur).Include(v => v.VenteLivre).ThenInclude(vl => vl.Livre).Include(v => v.Bibliotheque);
+            IEnumerable<Vente> ventes = _dbContext.ventes.Where(p => p.AcheteurId == id).Include(v => v.Acheteur).Include(v => v.VenteLivre).ThenInclude(vl => vl.Livre).ThenInclude(l => l.Genre).Include(v => v.Bibliotheque);
             return ventes;
         }
     }

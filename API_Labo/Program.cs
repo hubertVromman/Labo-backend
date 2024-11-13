@@ -54,6 +54,7 @@ namespace API_Labo {
             builder.Services.AddScoped<IUtilisateurService, UtilisateurService>();
             builder.Services.AddScoped<IBibliothequeService, BibliothequeService>();
             builder.Services.AddScoped<ILivreService, LivreService>();
+            builder.Services.AddScoped<IGenreService, GenreService>();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(
@@ -93,16 +94,16 @@ namespace API_Labo {
             app.UseHttpsRedirection();
 
             app.UseCors("CorsPolicy");
+            //app.UseCors(o => o.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
 
             // OBLIGATOIREMENT DANS CE SENS
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //app.UseCors(o => o.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
 
-            //if (app.Environment.IsDevelopment())
-            //    app.MapControllers().AllowAnonymous();
-            //else
+            if (app.Environment.IsDevelopment())
+                app.MapControllers().AllowAnonymous();
+            else
                 app.MapControllers();
 
             app.Run();

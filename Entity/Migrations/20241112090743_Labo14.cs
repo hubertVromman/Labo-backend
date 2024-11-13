@@ -10,8 +10,8 @@ namespace EntityFramework.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("CREATE PROCEDURE [dbo].[Login] @Email                     NVARCHAR (320),    @MotDePasse                NVARCHAR (320) AS BEGIN SELECT * FROM utilisateurs WHERE Email = @Email AND MotDePasse = HASHBYTES('SHA2_512', @MotDePasse); END");
-            migrationBuilder.Sql("CREATE PROCEDURE [dbo].[Register] @email NVARCHAR(320), @motDePasse NVARCHAR(320), @nom NVARCHAR(320), @prenom NVARCHAR(320) AS BEGIN INSERT INTO utilisateurs (email, motDePasse, nom, prenom) VALUES (@email, HASHBYTES('SHA2_512', @motDePasse), @nom, @prenom); END");
+            migrationBuilder.Sql("CREATE OR ALTER PROCEDURE [dbo].[Login] @Email                     NVARCHAR (320),    @MotDePasse                NVARCHAR (320) AS BEGIN SELECT * FROM utilisateurs WHERE Email = @Email AND MotDePasse = HASHBYTES('SHA2_512', @MotDePasse); END");
+            migrationBuilder.Sql("CREATE OR ALTER PROCEDURE [dbo].[Register] @email NVARCHAR(320), @motDePasse NVARCHAR(320), @nom NVARCHAR(320), @prenom NVARCHAR(320) AS BEGIN INSERT INTO utilisateurs (email, motDePasse, nom, prenom) VALUES (@email, HASHBYTES('SHA2_512', @motDePasse), @nom, @prenom); END");
         }
 
         /// <inheritdoc />

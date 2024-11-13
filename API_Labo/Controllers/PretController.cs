@@ -17,7 +17,7 @@ namespace API_Labo.Controllers
         [HttpGet]
         public IActionResult Get() {
             try {
-                return Ok(_pretService.Get().Select(p => p.ToPret()).ToList();
+                return Ok(_pretService.Get().Select(p => p.ToPret()).ToList());
             } catch (Exception ex) {
                 return NotFound(ex.Message);
             }

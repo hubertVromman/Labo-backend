@@ -14,6 +14,7 @@ public class DatabaseContext(string _connectionString) : DbContext {
     public DbSet<LivreAuteur> livreAuteurs { get; set; }
     public DbSet<StockLivre> stockLivres { get; set; }
     public DbSet<VenteLivre> venteLivres { get; set; }
+    public DbSet<Genre> genres { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);

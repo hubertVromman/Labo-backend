@@ -51,8 +51,14 @@ namespace API_Labo.Mapper
                 ISBN = l.ISBN,
                 Titre = l.Titre,
                 DateParution = l.DateParution,
-                Genre = l.Genre,
+                GenreId = l.GenreId,
                 PrixVente = l.PrixVente,
+            };
+        }
+
+        public static Entity.Genre ToEntity(this GenreForm g) {
+            return new Entity.Genre() {
+                NomGenre = g.NomGenre,
             };
         }
 
@@ -69,7 +75,7 @@ namespace API_Labo.Mapper
                 ISBN = l.ISBN,
                 Titre = l.Titre,
                 DateParution = l.DateParution,
-                Genre = l.Genre,
+                Genre = l.Genre.NomGenre,
                 PrixVente = l.PrixVente,
             };
         }
@@ -80,7 +86,7 @@ namespace API_Labo.Mapper
                 ISBN = l.ISBN,
                 Titre = l.Titre,
                 DateParution = l.DateParution,
-                Genre = l.Genre,
+                Genre = l.Genre.NomGenre,
                 PrixVente = l.PrixVente,
                 Auteurs = l.LivreAuteur.Select(la => la.Auteur.ToAuteur()).ToList(),
             };
@@ -182,6 +188,21 @@ namespace API_Labo.Mapper
                 Livre = vl.Livre.ToLivre(),
                 Quantite = vl.Quantite,
                 PrixVente = vl.PrixVente,
+            };
+        }
+
+        public static Genre ToGenre(this Entity.Genre g) {
+            return new Genre() {
+                GenreId = g.GenreId,
+                NomGenre = g.NomGenre,
+                Livres = g.Livres?.Select(l => l.ToLivre()).ToList(),
+            };
+        }
+
+        public static GenreSimple ToGenreSimple(this Entity.Genre g) {
+            return new GenreSimple() {
+                GenreId = g.GenreId,
+                NomGenre = g.NomGenre,
             };
         }
     }

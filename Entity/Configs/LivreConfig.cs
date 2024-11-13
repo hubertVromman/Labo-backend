@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,7 +23,7 @@ namespace EntityFramework.Configs {
                 .IsRequired();
             builder.Property(nameof(Livre.DateParution))
                 .IsRequired();
-            builder.Property(nameof(Livre.Genre))
+            builder.Property(nameof(Livre.GenreId))
                 .IsRequired();
             builder.Property(nameof(Livre.PrixVente))
                 .HasColumnType("DECIMAL(9, 2)")
@@ -30,13 +31,20 @@ namespace EntityFramework.Configs {
 
             builder.HasIndex(l => l.ISBN).IsUnique();
 
+            builder
+                .HasOne(l => l.Genre)
+                .WithMany(g => g.Livres)
+                .HasForeignKey(l => l.GenreId)
+                .HasConstraintName("FK_Livre_Genre")
+                .IsRequired();
+
             builder.HasData(
                 new Livre() {
                     LivreId = -1,
                     ISBN = 1234,
                     Titre = "Coup de feu",
                     DateParution = new DateOnly(2015, 10, 25),
-                    Genre = "Thriller",
+                    GenreId = -3,
                     PrixVente = 19.99M
                 }, 
                 new Livre() {
@@ -44,7 +52,7 @@ namespace EntityFramework.Configs {
                     ISBN = 1235,
                     Titre = "Coup de foudre",
                     DateParution = new DateOnly(2015, 10, 25),
-                    Genre = "Romantique",
+                    GenreId = -2,
                     PrixVente = 19.99M,
                 },
                 new Livre() {
@@ -52,7 +60,7 @@ namespace EntityFramework.Configs {
                     ISBN = 1236,
                     Titre = "Coup de fouet",
                     DateParution = new DateOnly(2015, 10, 25),
-                    Genre = "Porno",
+                    GenreId = -1,
                     PrixVente = 19.99M,
                 }
             );

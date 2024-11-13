@@ -90,6 +90,7 @@ namespace BLL_Labo.Services
                 .Where(b => b.BibliothequeId == id)
                 .Include(b => b.StockLivre)
                 .ThenInclude(sl => sl.Livre)
+                .ThenInclude(l => l.Genre)
                 .FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
         }
     }

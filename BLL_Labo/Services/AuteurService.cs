@@ -17,7 +17,7 @@ namespace BLL_Labo.Services
         }
 
         public Auteur Get(int id) {
-            return _dbContext.auteurs.Where(a => a.AuteurId == id).Include(a => a.LivreAuteur).ThenInclude(la => la.Livre).FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
+            return _dbContext.auteurs.Where(a => a.AuteurId == id).Include(a => a.LivreAuteur).ThenInclude(la => la.Livre).ThenInclude(l => l.Genre).FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
         }
 
         public IEnumerable<Auteur> Get() {

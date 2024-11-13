@@ -13,8 +13,10 @@ namespace API_Labo.Models.Forms {
         public DateOnly DateParution { get; set; }
 
         [Required]
-        public string Genre { get; set; }
+        public int GenreId { get; set; }
 
         public decimal PrixVente { get; set; }
+
+        public List<int> AuteursId { get; set; }
     }
 }

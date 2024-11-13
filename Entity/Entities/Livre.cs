@@ -11,7 +11,8 @@ namespace EntityFramework.Entities {
         public int ISBN { get; set; }
         public string Titre { get; set; }
         public DateOnly DateParution { get; set; }
-        public string Genre { get; set; }
+        public Genre Genre { get; set; }
+        public int GenreId { get; set; }
         public decimal PrixVente { get; set; }
 
         public List<LivreAuteur> LivreAuteur { get; set; }

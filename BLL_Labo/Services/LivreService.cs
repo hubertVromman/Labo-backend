@@ -10,29 +10,37 @@ using System.Threading.Tasks;
 namespace BLL_Labo.Services
 {
     public class LivreService(DatabaseContext _dbContext) : ILivreService {
-        public int? Create(Livre l) {
+        public int Create(Livre l, int[] auteurIds) {
             _dbContext.Add(l);
+            _dbContext.SaveChanges();
+            foreach (int id in auteurIds)
+            {
+                _dbContext.Add(new LivreAuteur() {
+                    AuteurId = id,
+                    LivreId = l.LivreId,
+                });
+            }
             _dbContext.SaveChanges();
             return l.LivreId;
         }
 
         public Livre Get(int id) {
-            Livre l = _dbContext.livres.Where(l => l.LivreId == id).Include(l => l.LivreAuteur).ThenInclude(la => la.Auteur).FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
+            Livre l = _dbContext.livres.Where(l => l.LivreId == id).Include(l => l.LivreAuteur).ThenInclude(la => la.Auteur).Include(l => l.Genre).FirstOrDefault() ?? throw new ArgumentOutOfRangeException();
             return l;
         }
 
         public IEnumerable<Livre> ParAuteur(int id) {
-            IEnumerable<Livre> l = _dbContext.livres.Include(l => l.LivreAuteur).ThenInclude(la => la.Auteur).Where(l => l.LivreAuteur.Select(la => la.AuteurId).Contains(id));
+            IEnumerable<Livre> l = _dbContext.livres.Include(l => l.LivreAuteur).ThenInclude(la => la.Auteur).Include(l => l.Genre).Where(l => l.LivreAuteur.Select(la => la.AuteurId).Contains(id));
             return l;
         }
 
         public IEnumerable<Livre> ParGenre(string genre) {
-            IEnumerable<Livre> l = _dbContext.livres.Where(l => l.Genre == genre).Include(l => l.LivreAuteur).ThenInclude(la => la.Auteur);
+            IEnumerable<Livre> l = _dbContext.livres.Include(l => l.Genre).Where(l => l.Genre.NomGenre == genre).Include(l => l.LivreAuteur).ThenInclude(la => la.Auteur);
             return l;
         }
 
         public IEnumerable<Livre> Get() {
-            return _dbContext.livres;
+            return _dbContext.livres.Include(l => l.Genre);
         }
 
         public int Update(int id, Livre livre) {
@@ -40,7 +48,7 @@ namespace BLL_Labo.Services
             l.ISBN = livre.ISBN;
             l.Titre = livre.Titre;
             l.DateParution = livre.DateParution;
-            l.Genre = livre.Genre;
+            l.GenreId = livre.GenreId;
             l.PrixVente = livre.PrixVente;
             return _dbContext.SaveChanges();
         }

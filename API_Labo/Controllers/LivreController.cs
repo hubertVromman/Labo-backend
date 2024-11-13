@@ -3,6 +3,7 @@ using API_Labo.Models.Forms;
 using BLL_Labo.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Labo.Controllers {
@@ -12,7 +13,7 @@ namespace API_Labo.Controllers {
 
         [HttpGet]
         public IActionResult Get() {
-            return Ok(_livreService.Get());
+            return Ok(_livreService.Get().Select(l => l.ToLivre()));
         }
 
         [HttpGet("{livreId}")]
@@ -47,7 +48,13 @@ namespace API_Labo.Controllers {
         public IActionResult Post([FromBody] LivreForm l) {
             if (!ModelState.IsValid) return BadRequest();
 
-            return Ok(_livreService.Create(l.ToEntity()));
+            try {
+                int result = _livreService.Create(l.ToEntity(), l.AuteursId.ToArray());
+
+                return Ok();
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize("EmployeeRequired")]

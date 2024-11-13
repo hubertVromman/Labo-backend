@@ -15,12 +15,12 @@ namespace BLL_Labo.Services
     public class PretService(DatabaseContext _dbContext, IBibliothequeService _bibliothequeService) : IPretService {
 
         public IEnumerable<Pret> Get() {
-            IEnumerable<Pret> prets = _dbContext.prets.Include(v => v.PretLivre).ThenInclude(vl => vl.Livre).Include(v => v.Emprunteur).Include(v => v.Bibliotheque);
+            IEnumerable<Pret> prets = _dbContext.prets.Include(v => v.PretLivre).ThenInclude(vl => vl.Livre).ThenInclude(l => l.Genre).Include(v => v.Emprunteur).Include(v => v.Bibliotheque);
             return prets;
         }
 
         public Pret Get(int id) {
-            Pret? p = _dbContext.prets.Where(v => v.PretId == id).Include(v => v.PretLivre).ThenInclude(vl => vl.Livre).Include(v => v.Emprunteur).Include(v => v.Bibliotheque).FirstOrDefault() ?? throw new IndexOutOfRangeException();
+            Pret? p = _dbContext.prets.Where(v => v.PretId == id).Include(v => v.PretLivre).ThenInclude(vl => vl.Livre).ThenInclude(l => l.Genre).Include(v => v.Emprunteur).Include(v => v.Bibliotheque).FirstOrDefault() ?? throw new IndexOutOfRangeException();
             return p;
         }
 
@@ -65,6 +65,8 @@ namespace BLL_Labo.Services
 
         public int Rendre(int id, int utilisateurId) {
             Pret p = _dbContext.prets.Where(p => p.PretId == id).Include(p => p.PretLivre).FirstOrDefault() ?? throw new ArgumentOutOfRangeException("Le pret n'a pas été trouvé");
+            if (p.EstRendu)
+                throw new ArgumentException("Les livres ont déjà été rendus");
             if (p.EmprunteurId != utilisateurId) {
                 throw new UnauthorizedAccessException("L'utilisateur n'a pas fait le pret");
             }
@@ -81,7 +83,7 @@ namespace BLL_Labo.Services
         }
 
         public IEnumerable<Pret> ParUtilisateur(int id) {
-            IEnumerable<Pret> prets = _dbContext.prets.Where(p => p.EmprunteurId == id).Include(v => v.Emprunteur).Include(v => v.PretLivre).ThenInclude(vl => vl.Livre).Include(v => v.Bibliotheque);
+            IEnumerable<Pret> prets = _dbContext.prets.Where(p => p.EmprunteurId == id).Include(v => v.Emprunteur).Include(v => v.PretLivre).ThenInclude(vl => vl.Livre).ThenInclude(l => l.Genre).Include(v => v.Bibliotheque);
             return prets;
         }
     }
