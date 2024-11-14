@@ -33,7 +33,7 @@ namespace TFCloud_Blazor_ApiSample.Controllers {
                     nom: form.Nom,
                     prenom: form.Prenom
                 );
-                return Ok("Inscription réussie");
+                return Ok();
             } catch (SqlException ex) {
                 return BadRequest(ex.Message);
             }
