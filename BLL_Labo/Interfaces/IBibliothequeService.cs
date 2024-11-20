@@ -5,7 +5,7 @@ namespace BLL_Labo.Interfaces
 {
     public interface IBibliothequeService
     {
-        int? Create(Bibliotheque b);
+        int Create(Bibliotheque b);
         int Delete(int id);
         IEnumerable<Bibliotheque> Get();
         Bibliotheque Get(int id);

@@ -3,8 +3,7 @@
 namespace API_Labo.Models.Forms {
     public class LivreForm {
 
-        [Required]
-        public int ISBN { get; set; }
+        public string ISBN { get; set; }
 
         [Required]
         public string Titre { get; set; }

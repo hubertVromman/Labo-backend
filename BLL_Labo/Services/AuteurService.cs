@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BLL_Labo.Services
 {
     public class AuteurService(DatabaseContext _dbContext) : IAuteurService {
-        public int? Create(Auteur a) {
+        public int Create(Auteur a) {
             _dbContext.Add(a);
             _dbContext.SaveChanges();
             return a.AuteurId;

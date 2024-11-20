@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BLL_Labo.Services {
     public class GenreService(DatabaseContext _dbContext) : IGenreService {
-        public int? Create(Genre g) {
+        public int Create(Genre g) {
             _dbContext.Add(g);
             _dbContext.SaveChanges();
             return g.GenreId;

@@ -26,8 +26,7 @@ namespace EntityFramework.Configs {
             builder.Property(nameof(Livre.GenreId))
                 .IsRequired();
             builder.Property(nameof(Livre.PrixVente))
-                .HasColumnType("DECIMAL(9, 2)")
-                .IsRequired();
+                .HasColumnType("DECIMAL(9, 2)");
 
             builder.HasIndex(l => l.ISBN).IsUnique();
 
@@ -41,7 +40,7 @@ namespace EntityFramework.Configs {
             builder.HasData(
                 new Livre() {
                     LivreId = -1,
-                    ISBN = 1234,
+                    ISBN = "1234",
                     Titre = "Coup de feu",
                     DateParution = new DateOnly(2015, 10, 25),
                     GenreId = -3,
@@ -49,7 +48,7 @@ namespace EntityFramework.Configs {
                 }, 
                 new Livre() {
                     LivreId = -2,
-                    ISBN = 1235,
+                    ISBN = "1235",
                     Titre = "Coup de foudre",
                     DateParution = new DateOnly(2015, 10, 25),
                     GenreId = -2,
@@ -57,7 +56,7 @@ namespace EntityFramework.Configs {
                 },
                 new Livre() {
                     LivreId = -3,
-                    ISBN = 1236,
+                    ISBN = "1236",
                     Titre = "Coup de fouet",
                     DateParution = new DateOnly(2015, 10, 25),
                     GenreId = -1,

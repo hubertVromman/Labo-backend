@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace BLL_Labo.Services
 {
     public class BibliothequeService(DatabaseContext _dbContext) : IBibliothequeService {
-        public int? Create(Bibliotheque b) {
+        public int Create(Bibliotheque b) {
             _dbContext.Add(b);
             _dbContext.SaveChanges();
             return b.BibliothequeId;
