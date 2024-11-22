@@ -30,8 +30,8 @@ namespace API_Labo.Mapper
 
         public static BLL.StockForm ToBLL(this StockForm s) {
             return new BLL.StockForm() {
-                LivreId = s.LivreId,
-                BibliothequeId = s.BibliothequeId,
+                LivreId = (int)s.LivreId,
+                BibliothequeId = (int)s.BibliothequeId,
                 StockAchat = s.StockAchat,
                 StockLocation = s.StockLocation,
             };
@@ -39,10 +39,10 @@ namespace API_Labo.Mapper
 
         public static BLL.StockForm ToBLL(this StockFormRequired s) {
             return new BLL.StockForm() {
-                LivreId = s.LivreId,
-                BibliothequeId = s.BibliothequeId,
-                StockAchat = s.StockAchat,
-                StockLocation = s.StockLocation,
+                LivreId = (int)s.LivreId,
+                BibliothequeId = (int)s.BibliothequeId,
+                StockAchat = (int)s.StockAchat,
+                StockLocation = (int)s.StockLocation,
             };
         }
 

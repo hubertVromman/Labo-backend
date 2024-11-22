@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BLL_Labo.Services
@@ -61,11 +62,15 @@ namespace BLL_Labo.Services
 
         public int SetStock(StockForm s) {
             StockLivre? sl = _dbContext.stockLivres.Where(a => a.BibliothequeId == s.BibliothequeId && a.LivreId == s.LivreId).FirstOrDefault();
-            if (sl is not null) {
+            if (sl is not null)
+            {
                 sl.StockAchat = s.StockAchat;
                 sl.StockLocation = s.StockLocation;
-            } else {
-                StockLivre newsl = new StockLivre() {
+            }
+            else
+            {
+                StockLivre newsl = new StockLivre()
+                {
                     LivreId = s.LivreId,
                     BibliothequeId = s.BibliothequeId,
                     StockLocation = s.StockLocation,

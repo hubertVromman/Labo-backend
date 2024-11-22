@@ -3,7 +3,7 @@
 namespace API_Labo.Models.Forms {
     public class LivreForm {
 
-        public string ISBN { get; set; }
+        public string? ISBN { get; set; }
 
         [Required]
         public string Titre { get; set; }
@@ -14,7 +14,7 @@ namespace API_Labo.Models.Forms {
         [Required]
         public int GenreId { get; set; }
 
-        public decimal PrixVente { get; set; }
+        public decimal? PrixVente { get; set; }
 
         public List<int> AuteursId { get; set; }
     }

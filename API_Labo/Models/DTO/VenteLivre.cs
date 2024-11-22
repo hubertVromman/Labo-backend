@@ -4,6 +4,6 @@
     {
         public Livre Livre { get; set; }
         public int Quantite { get; set; }
-        public decimal PrixVente { get; set; }
+        public decimal? PrixVente { get; set; }
     }
 }
